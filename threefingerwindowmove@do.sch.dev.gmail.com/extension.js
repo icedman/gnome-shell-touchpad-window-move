@@ -1,8 +1,13 @@
-const Clutter = imports.gi.Clutter;
-const Meta = imports.gi.Meta;
-const Signals = imports.signals;
-const Lang = imports.lang;
-const ExtensionUtils = imports.misc.extensionUtils;
+// const Clutter = imports.gi.Clutter;
+// const Meta = imports.gi.Meta;
+// const Signals = imports.signals;
+
+import Clutter from 'gi://Clutter';
+import Meta from 'gi://Meta';
+import * as Signals from 'resource:///org/gnome/shell/misc/signals.js';
+
+// const Lang = imports.lang;
+// const ExtensionUtils = imports.misc.extensionUtils;
 
 const EDGE_THRESHOLD = 48;
 
@@ -48,16 +53,16 @@ const TouchpadGestureAction = class{
         this._unmanagedHandler = null;
         this._workspaceChangedHandler = null;
       
-        this._settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.threefingerwindowmove');
-        this._settingsChangedCallbackID = this._settings.connect('changed', Lang.bind(this, this._updateSettings));
+        // this._settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.threefingerwindowmove');
+        // this._settingsChangedCallbackID = this._settings.connect('changed', Lang.bind(this, this._updateSettings));
         this._updateSettings();
     }
     
     _updateSettings() {
-        this._acceleration = this._settings.get_double('acceleration');
-        this._thresholdSquare = this._settings.get_int('threshold');
+        this._acceleration = 1.2; // this._settings.get_double('acceleration');
+        this._thresholdSquare = 40; // this._settings.get_int('threshold');
         this._thresholdSquare *= this._thresholdSquare;
-        this._summarizeThreshold = this._settings.get_boolean('summarize-threshold');
+        this._summarizeThreshold = true; // this._settings.get_boolean('summarize-threshold');
     }
 
     _handleEvent(actor, event) {
@@ -353,13 +358,15 @@ const TouchpadGestureAction = class{
 
 };
 
-Signals.addSignalMethods(TouchpadGestureAction.prototype);
+// Signals.addSignalMethods(TouchpadGestureAction.prototype);
 
-function enable() {
-    gestureHandler = new TouchpadGestureAction(global.stage);
-}
+export default class Extension {
+    enable() {
+        gestureHandler = new TouchpadGestureAction(global.stage);
+    }
 
-function disable(){
-    gestureHandler._cleanup();
-    gestureHandler = null;
+    disable() {
+        gestureHandler._cleanup();
+        gestureHandler = null;
+    }
 }
